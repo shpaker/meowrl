@@ -1,0 +1,39 @@
+name: 🛠 run tests
+
+on:
+
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.dev.txt ]; then pip install -r requirements.test.txt; fi
+
+    - name: Create .env from example
+      run: mv .env.example .env
+
+    - name: Up docker-compose
+      run: docker-compose up -d
+
+    - name: Wait till all containers are up
+      run: sleep 10
+
+    - name: Run tests
+      run: python -m pytest
