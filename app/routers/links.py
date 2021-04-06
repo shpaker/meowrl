@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from starlette import status
 
 from app.libs.links import create_link, read_link_by_url, read_user_links, update_link
-from app.models.routers import (
+from app.models.routers.links import (
     LinksCreateRequestModel,
     LinksCreateResponseModel,
     LinksReadResponseModel,

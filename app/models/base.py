@@ -4,6 +4,14 @@ from typing import Optional
 from pydantic import UUID4, AnyUrl, BaseModel, Field
 
 
+class PaginationModel(
+    BaseModel,
+):
+    page: int
+    per_page: int
+    total: int
+
+
 class LinkSettingsModel(
     BaseModel,
 ):

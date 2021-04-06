@@ -7,7 +7,8 @@ from starlette.responses import RedirectResponse
 
 from app.libs.clicks import create_click, read_clicks
 from app.libs.links import read_link_by_alias
-from app.models.routers import ClicksReadResponseModel, LinkPreviewResponseModel
+from app.models.routers.clicks import ClicksReadResponseModel
+from app.models.routers.links import LinkPreviewResponseModel
 from app.services.keycloak.depends import strict_bearer_auth
 from app.services.keycloak.models import JWTTokenModel
 from app.settings import get_settings
