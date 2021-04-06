@@ -1,9 +1,8 @@
-from datetime import datetime
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
-from app.models.base import ClickDBModel, LinkBaseModel, LinkFullModel, LinkSettingsModel
+from app.models.base import LinkBaseModel, LinkFullModel, LinkSettingsModel, PaginationModel
 
 
 class LinksCreateRequestModel(
@@ -19,22 +18,8 @@ class LinksCreateResponseModel(
     ...
 
 
-class PaginationModel(
-    BaseModel,
-):
-    page: int
-    per_page: int
-    total: int
-
-
 class LinksReadResponseModel(PaginationModel):
     links: List[LinkFullModel] = Field(default_factory=list)
-
-
-class ClicksReadResponseModel(PaginationModel):
-    from_ts: datetime
-    to_ts: datetime
-    clicks: List[ClickDBModel] = Field(default_factory=list)
 
 
 class LinkPreviewResponseModel(LinkFullModel):

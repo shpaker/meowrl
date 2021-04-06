@@ -34,4 +34,6 @@ class KeycloakWrapper(ServiceWrapperBase):
         pass
 
     async def health_check(self) -> None:
+        if not self.settings.keycloak_verify_signature:
+            return
         assert self.public_key is not None
