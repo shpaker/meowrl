@@ -6,7 +6,7 @@ from pydantic import BaseSettings
 
 class ServiceSettingsBase(BaseSettings):
     class Config:
-        env_prefix = "SHORTENER_"
+        env_prefix = "MEOWRL_"
         env_file = ".env"
         allow_mutation = False
 

@@ -1,5 +1,6 @@
 from functools import lru_cache
 from logging import DEBUG, INFO, basicConfig, getLogger
+from typing import Dict, Optional
 
 from fastapi import FastAPI
 from uvicorn import run
@@ -37,10 +38,15 @@ def add_middlewares(app: FastAPI) -> None:  # pylint: disable=unused-argument
 
 @lru_cache
 def create_app() -> FastAPI:
+    params: Dict[str, Optional[str]] = dict()
+    if settings.enable_specs:
+        params.update(openapi_url=settings.specs.openapi, redoc_url=settings.specs.redoc)
     app = FastAPI(
         title=settings.title,
         version=settings.version,
         debug=settings.debug,
+        docs_url=None,
+        **params,  # type: ignore
     )
     add_event_handlers(app)
     add_routers(app)

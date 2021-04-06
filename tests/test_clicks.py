@@ -4,6 +4,12 @@ from pytest import mark
 
 
 @mark.asyncio
+async def test_auth(client):
+    response: Response = await client.get(f"/clicks", params=dict(alias="alias"))
+    assert response.status_code == status.HTTP_403_FORBIDDEN, response.text
+
+
+@mark.asyncio
 async def test_range(auth_client, client):
     response: Response = await auth_client.post("/links", json=dict(url="https://facebook1.com"))
     alias = response.json()["alias"]
