@@ -23,6 +23,7 @@ settings = get_settings()
     path="/",
     response_model=LinksCreateResponseModel,
     summary="Shorten a link",
+    status_code=status.HTTP_201_CREATED,
 )
 async def create_link_handler(
     request: LinksCreateRequestModel,
@@ -47,7 +48,7 @@ async def create_link_handler(
 @links_router.get(
     path="/",
     response_model=LinksReadResponseModel,
-    summary="Read links created bu current user",
+    summary="Read links created by current user",
 )
 async def read_link_handler(
     page: int = Query(1, ge=1),

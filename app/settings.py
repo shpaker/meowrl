@@ -27,15 +27,24 @@ class ClicksSubSettings(BaseModel):
     time_range_default: timedelta = timedelta(weeks=1)
 
 
+class SpecsUrlsSubSettings(BaseModel):
+    redoc: str = "/api"
+    openapi: str = "/api.json"
+
+
 class Settings(ServiceSettingsBase):
+
     title: str = "meowrl"
     version: str = "0.1.0"
     host: str = "0.0.0.0"
     port: int = 8000
     debug: bool = False
+    enable_specs: bool = False
+
     mongodb: MongoDBSubSettings = MongoDBSubSettings()
     pagination: PaginationSubSettings = PaginationSubSettings()
     clicks: ClicksSubSettings = ClicksSubSettings()
+    specs: SpecsUrlsSubSettings = SpecsUrlsSubSettings()
 
 
 @lru_cache

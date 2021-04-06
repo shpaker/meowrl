@@ -1,5 +1,6 @@
 from functools import lru_cache
 from logging import DEBUG, INFO, basicConfig, getLogger
+from typing import Dict, Optional
 
 from fastapi import FastAPI
 from uvicorn import run
@@ -25,10 +26,10 @@ def add_event_handlers(app: FastAPI) -> None:
 
 
 def add_routers(app: FastAPI) -> None:
-    app.include_router(router=links_router, prefix="/links")
-    app.include_router(router=clicks_router, prefix="/clicks")
-    app.include_router(router=redirect_router, prefix="/r")
-    app.include_router(router=healthz_router)
+    app.include_router(router=links_router, prefix="/links", tags=["Links"])
+    app.include_router(router=clicks_router, prefix="/clicks", tags=["Clicks"])
+    app.include_router(router=redirect_router, prefix="/r", tags=["Redirect"])
+    app.include_router(router=healthz_router, tags=["Health Checks"])
 
 
 def add_middlewares(app: FastAPI) -> None:  # pylint: disable=unused-argument
@@ -37,10 +38,15 @@ def add_middlewares(app: FastAPI) -> None:  # pylint: disable=unused-argument
 
 @lru_cache
 def create_app() -> FastAPI:
+    params: Dict[str, Optional[str]] = dict()
+    if settings.enable_specs:
+        params.update(openapi_url=settings.specs.openapi, redoc_url=settings.specs.redoc)
     app = FastAPI(
         title=settings.title,
         version=settings.version,
         debug=settings.debug,
+        docs_url=None,
+        **params,  # type: ignore
     )
     add_event_handlers(app)
     add_routers(app)
@@ -51,4 +57,9 @@ def create_app() -> FastAPI:
 def main() -> None:
     logger.info(f"Start {settings.title} {settings.version} http://{settings.host}:{settings.port}")
     logger.debug(f"=== DEBUG IS {str(settings.debug).upper()} ===")
-    run(app="app:app", log_level="warning")
+    run(
+        app="app:app",
+        host=settings.host,
+        port=settings.port,
+        log_level="warning",
+    )

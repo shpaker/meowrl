@@ -1,4 +1,4 @@
-from logging import getLogger, basicConfig
+from logging import basicConfig, getLogger
 from pathlib import Path
 from sys import path
 from uuid import uuid4

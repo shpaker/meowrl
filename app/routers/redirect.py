@@ -13,7 +13,7 @@ settings = get_settings()
 @redirect_router.get("/{alias}")
 async def follow_url_handler(
     request: Request,
-    alias: str = Path(str),
+    alias: str = Path(...),
 ):
     record = await read_link_by_alias(alias)
     if not record:

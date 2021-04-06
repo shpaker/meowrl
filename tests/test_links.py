@@ -4,13 +4,19 @@ from pytest import mark
 
 
 @mark.asyncio
+async def test_auth(client):
+    response: Response = await client.post(f"/links", json=dict(url="http://alias.dd"))
+    assert response.status_code == status.HTTP_403_FORBIDDEN, response.text
+
+
+@mark.asyncio
 async def test_create_link(
     client,
     auth_client,
 ):
     response: Response = await auth_client.post("/links", json=dict(url="https://ya.ru"))
     link_data = response.json()
-    assert response.status_code == status.HTTP_200_OK, response.text
+    assert response.status_code == status.HTTP_201_CREATED, response.text
     response: Response = await client.get(f"/r/{link_data['alias']}", allow_redirects=False)
     assert response.next_request.url == "https://ya.ru", response.text
 
@@ -20,7 +26,7 @@ async def test_create_duplicate_link(
     auth_client,
 ):
     response: Response = await auth_client.post("/links", json=dict(url="https://goo.gl", title="test1"))
-    assert response.status_code == status.HTTP_200_OK, response.text
+    assert response.status_code == status.HTTP_201_CREATED, response.text
     response: Response = await auth_client.post("/links", json=dict(url="https://goo.gl", title="test1"))
     assert response.status_code == status.HTTP_409_CONFLICT, response.text
 
