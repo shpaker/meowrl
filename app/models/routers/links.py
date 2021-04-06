@@ -22,10 +22,6 @@ class LinksReadResponseModel(PaginationModel):
     links: List[LinkFullModel] = Field(default_factory=list)
 
 
-class LinkPreviewResponseModel(LinkFullModel):
-    ...
-
-
 class LinksUpdateRequest(BaseModel):
     alias: str
     settings: LinkSettingsModel

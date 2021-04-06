@@ -12,7 +12,6 @@ async def test_create_link(
     link_data = response.json()
     assert response.status_code == status.HTTP_200_OK, response.text
     response: Response = await client.get(f"/r/{link_data['alias']}", allow_redirects=False)
-    assert response.status_code == status.HTTP_307_TEMPORARY_REDIRECT, response.text
     assert response.next_request.url == "https://ya.ru", response.text
 
 
@@ -78,32 +77,3 @@ async def test_archived_link(
     await auth_client.patch("/links", json=dict(alias=alias, settings=dict(archived=False)))
     response: Response = await client.get(f"/r/{alias}", allow_redirects=False)
     assert response.status_code == status.HTTP_307_TEMPORARY_REDIRECT, response.text
-
-
-@mark.asyncio
-async def test_read_clicks(
-    auth_client,
-    client,
-):
-    response: Response = await auth_client.post("/links", json=dict(url="https://facebook1.com"))
-    alias = response.json()["alias"]
-    await client.get(f"/r/{alias}", allow_redirects=False)
-    await client.get(f"/r/{alias}", allow_redirects=False)
-    await client.get(f"/r/{alias}", allow_redirects=False)
-    # await sleep(1)
-    response: Response = await auth_client.get(f"/r/{alias}/clicks")
-    data = response.json()
-    assert response.status_code == status.HTTP_200_OK, response.text
-    assert response.json()["total"] == 3, response.text
-
-
-@mark.asyncio
-async def test_link_preview(
-    client,
-    auth_client,
-):
-    response: Response = await auth_client.post("/links", json=dict(url="https://ywwwwa.ru"))
-    alias = response.json()["alias"]
-    response: Response = await client.get(f"/r/{alias}/preview")
-    data = response.json()
-    assert response.status_code == status.HTTP_200_OK, response.text
