@@ -25,10 +25,10 @@ def add_event_handlers(app: FastAPI) -> None:
 
 
 def add_routers(app: FastAPI) -> None:
-    app.include_router(router=links_router, prefix="/links")
-    app.include_router(router=clicks_router, prefix="/clicks")
-    app.include_router(router=redirect_router, prefix="/r")
-    app.include_router(router=healthz_router)
+    app.include_router(router=links_router, prefix="/links", tags=["Links"])
+    app.include_router(router=clicks_router, prefix="/clicks", tags=["Clicks"])
+    app.include_router(router=redirect_router, prefix="/r", tags=["Redirect"])
+    app.include_router(router=healthz_router, tags=["Health Checks"])
 
 
 def add_middlewares(app: FastAPI) -> None:  # pylint: disable=unused-argument
@@ -51,4 +51,9 @@ def create_app() -> FastAPI:
 def main() -> None:
     logger.info(f"Start {settings.title} {settings.version} http://{settings.host}:{settings.port}")
     logger.debug(f"=== DEBUG IS {str(settings.debug).upper()} ===")
-    run(app="app:app", log_level="warning")
+    run(
+        app="app:app",
+        host=settings.host,
+        port=settings.port,
+        log_level="warning",
+    )

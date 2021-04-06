@@ -10,7 +10,7 @@ async def test_create_link(
 ):
     response: Response = await auth_client.post("/links", json=dict(url="https://ya.ru"))
     link_data = response.json()
-    assert response.status_code == status.HTTP_200_OK, response.text
+    assert response.status_code == status.HTTP_201_CREATED, response.text
     response: Response = await client.get(f"/r/{link_data['alias']}", allow_redirects=False)
     assert response.next_request.url == "https://ya.ru", response.text
 

@@ -21,7 +21,7 @@ settings = get_settings()
     description="Read statistics by clicks from the specified time range",
 )
 async def range_handler(
-    alias: str = Query(str),
+    alias: str = Query(...),
     page: int = Query(1, ge=1),
     per_page: int = Query(
         settings.pagination.per_page_default,
