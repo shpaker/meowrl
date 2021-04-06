@@ -28,4 +28,4 @@ async def root_handler():
     response_model=HealthzResponseSchema,
 )
 async def healthz_handler(background_tasks: BackgroundTasks):
-    return await call_health_checks(SERVICE_HEALTH_CHECKS, background_tasks)
+    return await call_health_checks(SERVICE_HEALTH_CHECKS, background_tasks)  # type: ignore
