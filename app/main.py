@@ -4,6 +4,7 @@ from logging import DEBUG, INFO, basicConfig, getLogger
 from fastapi import FastAPI
 from uvicorn import run
 
+from app.routers.clicks import clicks_router
 from app.routers.healthz import healthz_router
 from app.routers.links import links_router
 from app.routers.redirect import redirect_router
@@ -17,7 +18,6 @@ logger = getLogger(__name__)
 
 
 def add_event_handlers(app: FastAPI) -> None:
-
     for wrapper in SERVICE_WRAPPERS:
         app.add_event_handler("startup", wrapper.startup_event_handler)
         app.add_event_handler("shutdown", wrapper.shutdown_event_handler)
@@ -26,6 +26,7 @@ def add_event_handlers(app: FastAPI) -> None:
 
 def add_routers(app: FastAPI) -> None:
     app.include_router(router=links_router, prefix="/links")
+    app.include_router(router=clicks_router, prefix="/clicks")
     app.include_router(router=redirect_router, prefix="/r")
     app.include_router(router=healthz_router)
 
