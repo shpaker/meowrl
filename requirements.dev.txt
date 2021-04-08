@@ -1,5 +1,4 @@
 --requirement requirements.txt
---requirement requirements.lint.txt
 --requirement requirements.test.txt
 
-isort==5.8.0
+pre-commit==2.12.0

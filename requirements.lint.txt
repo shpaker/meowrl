@@ -1,6 +1,0 @@
---requirement requirements.txt
-
-black==20.8b1
-flake8==3.9.0
-mypy==0.812
-pylint==2.7.4

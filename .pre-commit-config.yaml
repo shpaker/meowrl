@@ -1,0 +1,35 @@
+repos:
+- repo: https://github.com/pycqa/isort/
+  rev: 5.8.0
+  hooks:
+    - id: isort
+      args: [ "--check", "app" ]
+- repo: https://github.com/psf/black
+  rev: 20.8b1
+  hooks:
+    - id: black
+      args: [ "--check", "app" ]
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0
+    hooks:
+    - id: check-added-large-files
+    - id: check-yaml
+    - id: detect-private-key
+    - id: end-of-file-fixer
+    - id: forbid-new-submodules
+    - id: pretty-format-json
+    - id: requirements-txt-fixer
+    - id: trailing-whitespace
+-   repo: https://gitlab.com/pycqa/flake8
+    rev: 3.9.0
+    hooks:
+    - id: flake8
+      additional_dependencies: [flake8-bugbear]
+-   repo: https://github.com/pycqa/pylint
+    rev: pylint-2.7.4
+    hooks:
+    - id: pylint
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.812
+    hooks:
+    - id: mypy

@@ -22,20 +22,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.lint.txt; fi
+        python -m pip install --upgrade pre-commit
 
-    - name: Lint with black
+    - name: Lint
       run: |
-        black --line-length 120 --check app
-
-    - name: Lint with flake8
-      run: |
-        flake8 ./app --count --show-source --statistics
-
-    - name: Lint with pylint
-      run: |
-        pylint ./app
-
-    - name: Lint with mypy
-      run: |
-        mypy ./app --pretty
+        run: pre-commit run --all-files --show-diff-on-failure
