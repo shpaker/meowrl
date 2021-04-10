@@ -5,7 +5,7 @@ from pytest import mark
 
 @mark.asyncio
 async def test_auth(client):
-    response: Response = await client.post(f"/links", json=dict(url="http://alias.dd"))
+    response: Response = await client.post("/links", json=dict(url="http://alias.dd"))
     assert response.status_code == status.HTTP_403_FORBIDDEN, response.text
 
 

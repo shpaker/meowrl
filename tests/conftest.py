@@ -1,3 +1,4 @@
+# pylint: disable=redefined-outer-name
 from logging import basicConfig, getLogger
 from pathlib import Path
 from sys import path
