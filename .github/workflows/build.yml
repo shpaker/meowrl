@@ -1,4 +1,4 @@
-name: 🐢 docker upload
+name: Build
 
 on:
   release:
@@ -6,15 +6,13 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       REGISTRY_HOST: ghcr.io
     steps:
       -
         name: Checkout
         uses: actions/checkout@v2
-        with:
-          submodules: recursive
       -
         name: Extract branch name
         shell: bash
