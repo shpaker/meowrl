@@ -71,8 +71,8 @@ async def read_user_links(
 async def create_link(
     owner: UUID4,
     url: AnyUrl,
-    title: Optional[str],
-    description: Optional[str],
+    title: str,
+    description: str,
     alias: Optional[str],
 ) -> LinkDbModel:
     collection = get_links_collection()

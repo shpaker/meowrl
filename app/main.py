@@ -38,15 +38,16 @@ def add_middlewares(app: FastAPI) -> None:  # pylint: disable=unused-argument
 
 @lru_cache
 def create_app() -> FastAPI:
-    params: Dict[str, Optional[str]] = dict()
+    doc_params: Dict[str, Optional[str]] = dict()
     if settings.enable_specs:
-        params.update(openapi_url=settings.specs.openapi, redoc_url=settings.specs.redoc)
+        doc_params.update(openapi_url=settings.specs.openapi, redoc_url=settings.specs.redoc)
     app = FastAPI(
         title=settings.title,
         version=settings.version,
         debug=settings.debug,
         docs_url=None,
-        **params,  # type: ignore
+        root_path=settings.root_path,
+        **doc_params,  # type: ignore
     )
     add_event_handlers(app)
     add_routers(app)

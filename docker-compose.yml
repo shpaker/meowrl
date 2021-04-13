@@ -1,19 +1,6 @@
 version: '3.7'
 
 services:
-
-  keycloak:
-    image: quay.io/keycloak/keycloak:12.0.4
-    restart: "no"
-    volumes:
-      - ~/kc_data/:/var/lib/postgresql/data
-    ports:
-      - 8080:8080
-    environment:
-      KEYCLOAK_USER: root
-      KEYCLOAK_PASSWORD: example
-
-
   mongodb:
     image: mongo
     restart: "no"
