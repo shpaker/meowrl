@@ -5,7 +5,7 @@ from starlette import status
 
 from app.libs.depends import pagination_parameters
 from app.libs.links import create_link, read_link_by_url, read_user_links, update_link
-from app.libs.tags import ensure_tag
+from app.libs.tags import ensure_tag, read_tags_for_link
 from app.models.pagination import PaginationParametersModel
 from app.models.routers.links import (
     LinksCreateRequestModel,
@@ -13,6 +13,7 @@ from app.models.routers.links import (
     LinksReadResponseModel,
     LinksUpdateRequest,
     LinksUpdateResponseModel,
+    LinkWithTagsModel,
 )
 from app.services.keycloak.depends import strict_bearer_auth
 from app.services.keycloak.models import JWTTokenModel
@@ -48,7 +49,7 @@ async def create_link_handler(
     response = LinksCreateResponseModel(**record.dict())
     for tag_name in request.tags:
         tag = await ensure_tag(name=tag_name, owner=token_payload.sub, aliases=record.alias)
-        response.tags.append(tag)
+        response.tags.append(tag.name)
 
     return response
 
@@ -62,18 +63,24 @@ async def read_link_handler(
     pagination: PaginationParametersModel = Depends(pagination_parameters),
     links_filter: Optional[LinksFilterEnum] = Query(None, alias="filter"),
     token_payload: JWTTokenModel = Depends(strict_bearer_auth),  # noqa, pylint: disable=unused-argument
+    tag: Optional[str] = Query(None, regex=settings.tags.regex),  # type: ignore
 ):
     links, total = await read_user_links(
         owner=token_payload.sub,
         links_filter=links_filter,
         page=pagination.page,
         per_page=pagination.per_page,
+        tag=tag,
     )
+    links_with_tags = list()
+    for link in links:
+        tags = await read_tags_for_link(link.alias)
+        links_with_tags.append(LinkWithTagsModel(tags=tags, **link.dict()))
     return LinksReadResponseModel(
         page=pagination.page,
         per_page=pagination.per_page,
         total=total,
-        links=links,  # type: ignore
+        links=links_with_tags,
     )
 
 

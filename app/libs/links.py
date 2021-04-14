@@ -1,15 +1,18 @@
 from typing import Any, Dict, List, Optional, Tuple
 
+from fastapi import Query
 from hashids import Hashids
 from pydantic import UUID4, AnyUrl
 from pymongo import DESCENDING
 from pymongo.results import UpdateResult
 
+from app.libs.tags import read_tag
 from app.models.base import LinkDbModel
 from app.services.mongodb.depends import get_links_collection, mongodb_paginated_find
-from app.settings import LinksFilterEnum
+from app.settings import LinksFilterEnum, get_settings
 
 hashids = Hashids()
+settings = get_settings()
 
 
 async def links_count(query: Optional[Dict[str, Any]] = None) -> int:
@@ -49,9 +52,19 @@ async def read_user_links(
     links_filter: Optional[LinksFilterEnum],
     page: int,
     per_page: int,
+    tag: Optional[str] = Query(..., regex=settings.tags.regex),  # type: ignore
 ) -> Tuple[List[LinkDbModel], int]:
     collection = get_links_collection()
     query: Dict[str, Any] = dict(owner=owner)
+
+    if tag:
+        tag_data = await read_tag(name=tag, owner=owner)
+        if not tag_data:
+            raise ValueError(f'Unknown tag "{tag}"')
+        query.update({"$or": []})
+        for alias in tag_data.aliases:
+            query["$or"].append(dict(alias=alias))
+
     if links_filter:
         expression = "$ne" if links_filter.ARCHIVED else "$eq"
         query.update(archived={expression: False})

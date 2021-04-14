@@ -1,16 +1,15 @@
 from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
-from pydantic import UUID4, BaseModel, Field, constr, validator
+from pydantic import UUID4, BaseModel, Field, validator
 
 from app.settings import get_settings
 
 settings = get_settings()
-TagNameType = constr(regex=settings.tags.regex)
 
 
 class TagModel(BaseModel):
-    name: TagNameType  # type: ignore
+    name: str = Field(..., regex=settings.tags.regex)
     created_at: datetime = Field(default_factory=lambda: datetime.now(tz=timezone.utc))
     updated_at: Optional[datetime] = None
 
