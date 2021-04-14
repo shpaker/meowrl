@@ -13,7 +13,7 @@ class SentryWrapper(ServiceWrapperBase):
     async def startup_event_handler(self) -> None:
         settings = SentrySettings()
         if settings.sentry_dsn:
-            sentry_sdk.init(
+            sentry_sdk.init(  # pylint: disable=abstract-class-instantiated
                 dsn=settings.sentry_dsn,
                 environment=settings.sentry_environment,
                 release=settings.sentry_release,
