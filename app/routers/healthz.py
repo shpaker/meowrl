@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi.responses import PlainTextResponse
 from starlette.background import BackgroundTasks
 
 from app.libs.healthz import call_health_checks
@@ -23,7 +24,16 @@ async def root_handler():
 
 
 @healthz_router.get(
-    path="/healthz",
+    path="/ping",
+    summary="Ping",
+    response_class=PlainTextResponse,
+)
+async def ping_handler():
+    return "pong"
+
+
+@healthz_router.get(
+    path="/health",
     summary="Health check",
     response_model=HealthzResponseSchema,
 )

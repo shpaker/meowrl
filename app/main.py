@@ -9,6 +9,7 @@ from app.routers.clicks import clicks_router
 from app.routers.healthz import healthz_router
 from app.routers.links import links_router
 from app.routers.redirect import redirect_router
+from app.routers.tags import tags_router
 from app.services import SERVICE_WRAPPERS
 from app.services.mongodb.indexes import create_mongodb_indexes
 from app.settings import get_settings
@@ -26,10 +27,11 @@ def add_event_handlers(app: FastAPI) -> None:
 
 
 def add_routers(app: FastAPI) -> None:
+    app.include_router(router=healthz_router, tags=["Health Checks"])
     app.include_router(router=links_router, prefix="/links", tags=["Links"])
     app.include_router(router=clicks_router, prefix="/clicks", tags=["Clicks"])
+    app.include_router(router=tags_router, prefix="/tags", tags=["Tags"])
     app.include_router(router=redirect_router, prefix="/r", tags=["Redirect"])
-    app.include_router(router=healthz_router, tags=["Health Checks"])
 
 
 def add_middlewares(app: FastAPI) -> None:  # pylint: disable=unused-argument
@@ -38,15 +40,16 @@ def add_middlewares(app: FastAPI) -> None:  # pylint: disable=unused-argument
 
 @lru_cache
 def create_app() -> FastAPI:
-    params: Dict[str, Optional[str]] = dict()
+    doc_params: Dict[str, Optional[str]] = dict()
     if settings.enable_specs:
-        params.update(openapi_url=settings.specs.openapi, redoc_url=settings.specs.redoc)
+        doc_params.update(openapi_url=settings.specs.openapi, redoc_url=settings.specs.redoc)
     app = FastAPI(
         title=settings.title,
         version=settings.version,
         debug=settings.debug,
         docs_url=None,
-        **params,  # type: ignore
+        root_path=settings.root_path,
+        **doc_params,  # type: ignore
     )
     add_event_handlers(app)
     add_routers(app)

@@ -17,14 +17,19 @@ def get_database() -> AsyncIOMotorCollection:
     return client[settings.mongodb.database]
 
 
+def get_clicks_collection() -> AsyncIOMotorCollection:
+    db = get_database()
+    return db[settings.mongodb.clicks_collection]
+
+
 def get_links_collection() -> AsyncIOMotorCollection:
     db = get_database()
     return db[settings.mongodb.links_collection]
 
 
-def get_clicks_collection() -> AsyncIOMotorCollection:
+def get_tags_collection() -> AsyncIOMotorCollection:
     db = get_database()
-    return db[settings.mongodb.clicks_collection]
+    return db[settings.mongodb.tags_collection]
 
 
 async def mongodb_paginated_find(

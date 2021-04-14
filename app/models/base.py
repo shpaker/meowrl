@@ -4,20 +4,10 @@ from typing import Optional
 from pydantic import UUID4, AnyUrl, BaseModel, Field
 
 
-class PaginationModel(
-    BaseModel,
-):
-    page: int
-    per_page: int
-    total: int
-
-
-class LinkSettingsModel(
-    BaseModel,
-):
-    title: Optional[str] = Field("")
-    description: Optional[str] = Field("")
-    archived: bool = Field(False)
+class LinkSettingsModel(BaseModel):
+    title: str = ""
+    description: str = ""
+    archived: bool = False
 
 
 class LinkBaseModel(
@@ -34,30 +24,22 @@ class LinkFullModel(
     created_at: datetime = Field(default_factory=lambda: datetime.now(tz=timezone.utc))
 
 
-class LinkDbModel(
-    LinkFullModel,
-):
+class LinkDbModel(LinkFullModel):
     owner: UUID4
 
 
-class GeoIpModel(
-    BaseModel,
-):
+class GeoIpModel(BaseModel):
     city_name: Optional[str]
     country_name: Optional[str]
     country_iso_code: Optional[str]
 
 
-class ClickModel(
-    BaseModel,
-):
+class ClickModel(BaseModel):
     alias: str
     ip_address: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(tz=timezone.utc))
     geo: Optional[GeoIpModel]
 
 
-class ClickDBModel(
-    ClickModel,
-):
+class ClickDBModel(ClickModel):
     ...

@@ -10,7 +10,7 @@ from jose import jwt
 from pytest import fixture
 
 from app.main import create_app
-from app.services.mongodb.depends import get_clicks_collection, get_links_collection
+from app.services.mongodb.depends import get_clicks_collection, get_links_collection, get_tags_collection
 from app.settings import get_settings
 
 path.insert(0, str(Path(__file__).parent.parent.resolve()))
@@ -86,4 +86,6 @@ async def remove_collection(generated_token: str):
     coll = get_links_collection()
     await coll.delete_many({})
     coll = get_clicks_collection()
+    await coll.delete_many({})
+    coll = get_tags_collection()
     await coll.delete_many({})

@@ -53,20 +53,19 @@ async def test_read_links(
 async def test_update_link(
     auth_client,
 ):
-    response: Response = await auth_client.post("/links", json=dict(url="https://testt.com"))
-    link_data = response.json()
-    data_for_update = dict(
-        title="test",
-        description="test test",
-        archived=True,
-    )
+    initial_data = dict(title="foo")
+    response: Response = await auth_client.post("/links", json=dict(url="https://testt.com", **initial_data))
+    response_data = response.json()
+    data_for_update = dict(archived=True, description="bar")
     response: Response = await auth_client.patch(
-        "/links", json=dict(alias=link_data["alias"], settings=data_for_update)
+        "/links", json=dict(alias=response_data["alias"], update=data_for_update)
     )
     assert response.status_code == status.HTTP_200_OK, response.text
-    link_data = response.json()
+    response_data = response.json()
     for key in data_for_update:
-        assert link_data[key] == data_for_update[key], response.text
+        assert response_data[key] == data_for_update[key], response.text
+    for key in initial_data:
+        assert response_data[key] == initial_data[key], response.text
 
 
 @mark.asyncio
@@ -77,9 +76,9 @@ async def test_archived_link(
     url = "https://t.ttt"
     response: Response = await auth_client.post("/links", json=dict(url=url))
     alias = response.json()["alias"]
-    await auth_client.patch("/links", json=dict(alias=alias, settings=dict(archived=True)))
+    await auth_client.patch("/links", json=dict(alias=alias, update=dict(archived=True)))
     response: Response = await client.get(f"/r/{alias}", allow_redirects=False)
     assert response.status_code == status.HTTP_403_FORBIDDEN, response.text
-    await auth_client.patch("/links", json=dict(alias=alias, settings=dict(archived=False)))
+    await auth_client.patch("/links", json=dict(alias=alias, update=dict(archived=False)))
     response: Response = await client.get(f"/r/{alias}", allow_redirects=False)
     assert response.status_code == status.HTTP_307_TEMPORARY_REDIRECT, response.text
